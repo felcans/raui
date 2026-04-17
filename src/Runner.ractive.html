@@ -83,11 +83,11 @@
     noCssTransform: true,
     use: [keys()],
     data() {
-      return { running: 0, run: 0, selected: 0 };
+      return { running: 0, run: 0, selected: 0, blank: false };
     },
     observe: {
       command(v) {
-        if (!v) {
+        if (!v && !this.get('blank')) {
           this.set('results', []);
           return;
         }
@@ -245,6 +245,7 @@
   .rrunner-box .command {
     border-radius: ${primary.radius || '0.2em'};
     border: ${primary.border || 1}px solid ${primary.bc || '#ccc'};
+    padding: 0.25em;
   }
   .rrunner-box .command input {
     width: 100%;
@@ -252,6 +253,8 @@
     border: 0;
     box-sizing: border-box;
     outline: 0;
+    color: ${primary.fg || '#222'};
+    background-color: ${primary.bg || '#fff'};
   }
   .rrunner-box .result:nth-child(1) {
     margin-top: 0.5em;

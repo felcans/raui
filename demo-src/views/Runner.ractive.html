@@ -20,8 +20,12 @@
     * `popped` - the binding that controls whether the runner is visible.
   </marked></tab>
   <tab title=Example>
-    <runner bind-popped=popped on-init="@.setup($1)" />
-    <label as-field class=inline><button on-click="@.toggle('popped')">Show Runner</button></label>
+    <runner bind-popped=popped on-init="@.setup($1)" bind-blank bind-placeholder />
+    <div>
+      <label as-field><input type=checkbox checked="{{blank}}" /> Search for empty string?</label>
+      <label as-field><input type=checkbox checked="{{path}}" /> Show path in menu list?</label>
+      <label as-field><button on-click="@.toggle('popped')">Show Runner</button></label>
+    </div>
     <div>
       There is also a runner built into the demo application that gives access to all of the menu items. Press Ctrl+p or Cmd+p to activate the application's runner.
     </div>
@@ -41,15 +45,23 @@
       resizable: true, flex: true,
       width: '48em', height: '30em'
     },
+    observe: {
+      path: {
+        handler(v) {
+          const run = this.findComponent('runner');
+          if (run) run.addPlugin(MenuList(app.findComponent('menu'), { flat: !v }));
+        },
+        init: false,
+      },
+    },
     data() {
       return {
-        options: {
-        }
-      }
+        path: true,
+      };
     },
     setup(run) {
       run.addPlugin(WindowList(app.host));
-      run.addPlugin(MenuList(app.findComponent('menu'), { flat: true }));
+      run.addPlugin(MenuList(app.findComponent('menu')));
     },
   });
 </script>
