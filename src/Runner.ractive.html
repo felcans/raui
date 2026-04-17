@@ -31,9 +31,13 @@
       this.toggle('popped');
     }
 
-    addPlugin(plugin) {
+    addPlugin(plugin, pos) {
       if (typeof plugin !== 'object' || !plugin.name || typeof plugin.run !== 'function') return;
-      this.push('plugins', plugin);
+      let plugs = this.get('plugins') || [];
+      plugs = plugs.filter(p => p.name !== plugin.name);
+      if (typeof pos === 'number') plugs.splice(pos, 0, plugin);
+      else plugs.push(plugin);
+      this.set('plugins', plugs);
     }
 
     onSelected(result) {
