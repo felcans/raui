@@ -1,6 +1,6 @@
 <div class=rrunner-back class-rrunner-popped="~/popped" on-click="@.toggle('popped')" />
 <div class=rrunner-box class-rrunner-popped="~/popped">
-  <div class=command><input value="{{command}}" lazy=500 on-keys(13,27,38,40)="@.onKey(@event.which)" /></div>
+  <div class=command><input value="{{command}}" placeholder="{{placeholder}}" lazy=500 on-keys(9,13,27,38,40)="@.onKey(@event.which, @event)" /></div>
   <div class="results">
     {{#each results}}
       <div class="result" class-selected="@index === selected" on-click="@.onSelected(.)">
@@ -57,9 +57,17 @@
       }
     }
 
-    onKey(which) {
-      if (which === 27) this.set('popped', false);
-      else if (which === 13) {
+    onKey(which, ev) {
+      if (which === 9) {
+        which = ev.shiftKey ? 38 : 39;
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      if (which === 27) {
+        const el = this.lastEl;
+        this.set('popped', false);
+        if (el) el.focus();
+      } else if (which === 13) {
         const r = this.get('results')[this.get('selected')];
         if (r) this.onSelected(r);
       } else {
@@ -117,6 +125,7 @@
       },
       popped(v) {
         if (v) setTimeout(() => {
+          this.lastEl = document.activeElement;
           const el = this.find('input');
           if (el) {
             el.focus();
@@ -125,6 +134,7 @@
             el.selectionEnd = v.length;
           }
         }, 100);
+        else this.lastEl = undefined;
       },
     },
   });
