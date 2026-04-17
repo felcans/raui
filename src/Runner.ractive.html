@@ -64,9 +64,12 @@
         ev.stopPropagation();
       }
       if (which === 27) {
-        const el = this.lastEl;
-        this.set('popped', false);
-        if (el) el.focus();
+        if (this.get('command')) this.set('command', '');
+        else {
+          const el = this.lastEl;
+          this.set('popped', false);
+          if (el) el.focus();
+        }
       } else if (which === 13) {
         const r = this.get('results')[this.get('selected')];
         if (r) this.onSelected(r);
